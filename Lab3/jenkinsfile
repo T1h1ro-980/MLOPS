@@ -1,0 +1,64 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout Code') {
+            steps {
+                checkout scm  // Получаем код из GitHub репозитория
+            }
+        }
+
+        stage('Setup Environment') {
+            steps {
+                sh '''
+                    python3 -m venv ./venv
+                    . ./venv/bin/activate
+                    python3 -m ensurepip --upgrade
+                    pip3 install setuptools
+                    pip3 install -r requirements.txt
+                '''
+            }
+        }
+
+        stage('Download Data') {
+            steps {
+                sh '''
+                    . ./venv/bin/activate
+                    python3 download.py
+                '''
+            }
+        }
+
+        stage('Train Model') {
+            steps {
+                sh '''
+                    . ./venv/bin/activate
+                    echo "Start train model"
+                    python3 train_model.py > best_model.txt
+                '''
+            }
+        }
+
+        stage('Start MLflow Service') {
+            steps {
+                sh '''
+                    . ./venv/bin/activate
+                    export BUILD_ID=dontKillMe
+                    export JENKINS_NODE_COOKIE=dontKillMe
+                    path_model=$(cat best_model.txt)
+                    mlflow models serve -m $path_model -p 5003 --no-conda &
+                '''
+            }
+        }
+        
+         stage('Test MLflow Service') {
+            steps {
+                sh '''
+                    curl http://127.0.0.1:5003/invocations \
+                    -H "Content-Type: application/json" \
+                    --data '{"inputs": [[-1.75938045, -1.2340347, -1.4132767553, 0.76150439, 2.20097247, -0.10937195, 0.58931542, 0.1135538, -1.75938045, -1.2340347, -1.41327673, 0.76150439, 2.20097247, -0.10937195, 0.58931542, 0.1135538,-1.75938045, -1.2340347, -1.41327673]]}'
+                '''
+            }
+        }
+    }
+}
