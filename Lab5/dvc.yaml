@@ -19,3 +19,6 @@ stages:
       - src/train_model.py
     outs:
       - best_wine.pkl
+    metrics:
+      - metrics.json
+

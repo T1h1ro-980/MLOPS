@@ -37,10 +37,14 @@ stages:
       size: 872236
     - path: src/train_model.py
       hash: md5
-      md5: 844743bf2722788e6b69171144a09b36
-      size: 3027
+      md5: f414b9401fa01b6bc8c194448cd1e512
+      size: 3220
     outs:
     - path: best_wine.pkl
       hash: md5
       md5: f8cd9bbc80faa4a83c6568dc4c6dc9b0
       size: 1451
+    - path: metrics.json
+      hash: md5
+      md5: 4f7cfdb9d6b7d3a2ba141ae33b5143a7
+      size: 82

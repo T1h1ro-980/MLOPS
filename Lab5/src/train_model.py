@@ -8,6 +8,10 @@ import numpy as np
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 from mlflow.models import infer_signature
 import joblib
+<<<<<<< HEAD
+=======
+import json
+>>>>>>> df7c202 (Добавленны метрики dvc для Lab5)
 import yaml
 
 
@@ -82,6 +86,13 @@ def train(config):
         mlflow.sklearn.log_model(best, "model", signature=signature)
         with open("best_wine.pkl", "wb") as file:
             joblib.dump(best, file)
+        metrics = {
+            "rmse": rmse,
+            "mae": mae,
+            "r2": r2
+        }
+        with open("metrics.json", "w") as f:
+            json.dump(metrics, f)
 
 if __name__ == "__main__":
     config = load_config("./src/params.yaml")
