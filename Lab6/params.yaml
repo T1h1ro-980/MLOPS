@@ -1,0 +1,11 @@
+preprocessing:
+  variability_threshold: 0.8
+
+train:
+  test_size: 0.3
+  random_state: 42
+  alpha: [0.0001, 0.001, 0.01, 0.05, 0.1]
+  l1_ratio: [0.001, 0.05, 0.01, 0.2]
+  penalty: ["l1", "l2", "elasticnet"]
+  loss: ['squared_error', 'huber', 'epsilon_insensitive']
+  fit_intercept: [false, true]
